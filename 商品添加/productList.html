@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>商品列表</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="libs/common.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h3 class="wq-title">
+            <button type="button" class="btn" data-toggle="modal" data-target=".wq-add">
+                添加商品
+            </button>
+        </h3>
+        <!-- 添加错题部分 -->
+        <div class="modal fade wq-add">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!--细节划分-->
+                    <h4>请填写商品信息:</h4>
+                    <div class="form-group">
+                        <label for="wq-content">商品图片</label>
+                        <input type="text" class="form-control" id="wq-content">
+                    </div>
+                    <div class="form-group">
+                        <label for="wq-where">商品名称</label>
+                        <textarea id="wq-where" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">商品价格</label>
+                        <textarea id="wq-idea" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-success" data-dismiss="modal"
+                            id="wq-save-question">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--错题表格-->
+        <div class="row">
+            <table class="table table-bordered table-hover wq-main-table ">
+                <!--错题项目-->
+                <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">商品编号</th>
+                        <th class="col-md-3 text-center">商品图片</th>
+                        <th class="col-md-3 text-center">商品名称</th>
+                        <th class="col-md-3 text-center">商品价格</th>
+                        <th class="col-md-1 text-center">删除</th>
+                        <th class="col-md-1 text-center">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+
+                    <!--<tr class="text-center middle">
+						<td>**索引**</td>
+						<td>**标题**</td>
+						<td>**副标题**</td>
+						<td>
+							<a 
+								href="#" 
+								data-toggle="popover"
+								data-content="**过长内容详情(bootstrap会处理点击显示)**" 
+							>**过长隐藏内容**
+							</a>
+						</td>
+						<td>
+							<button class="btn delBtn">删除</button>
+						</td>
+						<td>
+							<button class="btn">
+								<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>-->
+
+
+                </tbody>
+            </table>
+        </div>
+        <div class="row text-center">
+            <ul class="pagination">
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+    </div>
+    <script src="libs/jquery-1.11.0.js"></script>
+    <script src="libs/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        $(function () {
+            axios.get("  http://localhost:3000/products").then(res => {
+                let str = "";
+                for (let i = 0; i < res.data.length; i++) {
+                    str += `
+                <tr class="text-center middle">
+						<td>${res.data[i].id}</td>
+						<td><img src="${res.data[i].imgsrc}"></td>
+						<td>${res.data[i].name}</td>
+						<td>${res.data[i].price}</td>
+						<td>
+							<button class="btn delBtn">删除</button>
+						</td>
+						<td>
+							<button class="btn">
+								<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+                `
+                }
+                tbody.innerHTML = str;
+            });
+            $("#wq-save-question").click(() => {
+                /* let files = document.getElementById('wq-content').files[0];
+                let formData = new FormData()
+                formData.append('file', files);
+                let headers = {headers: {"Content-Type": "multipart/form-data"}} */
+                axios.post("  http://localhost:3000/products", {
+                    imgsrc: "img/"+$("#wq-content").val()+".jpg",
+                    name: $("#wq-where").val(),
+                    price: $("#wq-idea").val()
+                }).then(res => {
+                    let filePath = res.filepath;
+                    console.log('服务器返回的文件路径:', filePath)
+                }).catch(err => {
+                    console.log(err);
+                });
+               // console.log(imgsrc);
+            })
+        })
+    </script>
+</body>
+
+</html> 

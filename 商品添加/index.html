@@ -1,0 +1,248 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品列表</title>
+<link rel="stylesheet" type="text/css" href="css/component.css" />
+<script src="js/modernizr.custom.js"></script>
+</head>
+<script src="libs/jquery-1.11.0.js"></script>
+<style type="text/css">
+    #cart {
+     width: 800px;
+     margin: 0px auto;
+     text-align: center;
+ }
+
+     #cart input[type=button] {
+         border: none;
+         cursor: pointer;
+         background: none;
+         color: #ff6a00;
+         font-family: 'Microsoft YaHei';
+     }
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+
+     table th, td {
+         border: 1px solid #808080;
+         padding: 10px;
+     }
+ img {
+         width: 100px;
+         height: 80px;   
+     }
+</style>
+<body>
+  <div class="view">
+      <section class="grid">
+          <div class="product">
+              <div class="product__info">
+                  <img class="product__image" src="img/1.jpg" alt="Product 1" />
+                  <h3 class="product__title">商品1</h3>
+                  <span class="product__price highlight">￥3500</span>
+                  <button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span
+                          class="action__text">添加购物车</span></button>
+                  </div>
+          </div>
+          <div class="product">
+              <div class="product__info">
+                  <img class="product__image" src="img/2.jpg" alt="Product 1" />
+                  <h3 class="product__title">商品2</h3>
+                  <span class="product__price highlight">￥3800</span>
+                  <button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span
+                          class="action__text">添加购物车</span></button>
+              </div>
+          </div>
+          </div>
+          <div class="product">
+              <div class="product__info">
+                  <img class="product__image" src="img/3.jpg" alt="Product 1" />
+                  <h3 class="product__title">商品3</h3>
+                  <span class="product__price highlight">￥4000</span>
+                  <button class="action action--button action--buy"><i class="fa fa-shopping-cart"></i><span
+                          class="action__text">添加购物车</span></button>
+              </div>
+          </div>
+      </section>
+  </div>
+</body>
+<script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+ <script>
+     $(function () {
+         $("#products input").click(function () {
+             var img1 = $(this).parent().siblings().eq(1).html(); //找到图片
+             var name = $(this).parent().siblings().eq(2).html();//找到商品名称
+             var price = $(this).parent().siblings().eq(3).html();//找到价格
+             var flag = false;//默认为false（定义一个开关）
+             //找到goods里面的tr
+             //进行购物车里面的商品进行判断，如果里面没有商品则添加商品。
+             if ($("#goods tr").length == 0) {
+                 //找到goods里面的tr
+                 var newtr = $('<tr><td><input type="checkbox"/></td><td>' + img1 + '</td><td>' + name + '</td><td>' + price + '</td><td>1</td><td><input type="button" value="删除"/></td></tr>');
+                 //把新建的行追加到添加商品里面。
+                 $("#goods").append(newtr);
+                 return;
+             }
+                 //如果里面有商品则对里面的商品进行判重。
+             else {
+                 //循环里面的每一个商品
+                 $("#goods tr").each(function () {
+                     //找到商品的名称与上面获取到的商品名称进行对比
+                     if ($(this).children().eq(2).html() == name) {
+                         //找到此商品的数量
+                         var count = $(this).children().eq(4).html();
+                         //商品数量增加。
+                         count++;
+                         //对商品的数量进行重新复制
+                         $(this).children().eq(4).html(count);
+                         //开关为true
+                         flag = true;
+                         //跳出循环
+                         return false;
+                     }
+                     else {
+                         //如果没有循环到位默认值.
+                         flag = false;
+                     }
+                 });
+
+             }
+             //如果为默认值也就是说里面没有此商品，所以添加此商品。
+             if (flag == false) {
+                 var newtr = $('<tr><td><input type="checkbox"/></td><td>' + img1 + '</td><td>' + name + '</td><td>' + price + '</td><td>1</td><td><input type="button" value="删除"/></td></tr>');
+                 $("#goods").append(newtr);
+             }
+
+   --创造一个点击事件
+             //添加商品的复选框（选中）
+             //添加的商品没有点击事件，所以创造一个点击事件。
+             $("#goods").on("click", "input[type=checkbox]", function () {
+                 //默认被选中
+                 var fl = true;
+                 //input的点击事件
+                 //循环每一个商品
+                 $("#goods input[type=checkbox]").each(function () {
+                     //如果当前对象没有选中
+                     if ($(this).prop("checked") == false) {
+                         //默认没有被选中
+                         fl = false;
+                     }
+                 });
+                 //如果子按钮全选中则全选按钮选中。
+                 $(".checkAll").children().prop("checked", fl);
+             });
+
+             //点击全选按钮
+             $(".checkAll").children().click(function () {
+                 //子项全部被选中。
+                 $("#goods tr").find("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+                 //第二个全选也被选中。
+                 $(" .checkAll").children().prop("checked", $(this).prop("checked"));
+             });
+         });
+         //添加进去的按钮没有类似的点击事件，要进行手动添加点击事件。
+         $("#goods ").on("click", "input[type=button]", function () {
+             //找到当前对象的父级的父级进行移除
+             $(this).parent().parent().remove();
+         });
+         //多选删除
+         $("tfoot ").find("input[type=button]").click(function () {
+             $("#goods  tr").each(function () {
+                 if ($("#goods input[type=checkbox]").prop("checked")) {
+                     $(this).remove();
+                 }
+
+          --使用三元一次表达式
+                 //多选删除后取消全选
+                 $(" .checkAll").children().prop("checked", $(this).prop("checked")==false);
+             });
+         });
+     });
+ </script>
+</head>
+<body>
+  <div id="cart">
+     <h1>数码产品</h1>
+     <table id="products">
+         <thead>
+             <tr>
+                 <th>商品编号</th>
+                 <th>商品</th>
+                 <th>名称</th>
+                 <th>单价</th>
+                 <th>好评</th>
+                 <th>操作</th>
+             </tr>
+         </thead>
+         <tbody>
+             <tr>
+                 <td>1</td>
+                 <td>
+                     <img src="img/1.jpg" /></td>
+                 <td>华为1</td>
+                 <td>5999.88</td>
+                 <td>94%</td>
+                 <td>
+                     <input type="button" value="加入购物车" /></td>
+             </tr>
+             <tr>
+                 <td>2</td>
+                 <td>
+                     <img src="img/2.jpg" /></td>
+                 <td>华为2</td>
+                 <td>6999.88</td>
+                 <td>93%</td>
+                 <td>
+                     <input type="button" value="加入购物车" /></td>
+             </tr>
+             <tr>
+                 <td>3</td>
+                 <td>
+                     <img src="img/3.jpg" /></td>
+                 <td>华为3</td>
+                 <td>7999.88</td>
+                 <td>97%</td>
+                 <td>
+                     <input type="button" value="加入购物车" /></td>
+             </tr>
+             <tr>
+                 <td>4</td>
+                 <td>
+                     <img src="img/4.jpg" /></td>
+                 <td>华为4</td>
+                 <td>9999.88</td>
+                 <td>96%</td>
+                 <td>
+                     <input type="button" value="加入购物车" /></td>
+             </tr>
+         </tbody>
+     </table>
+     <h1>购物车</h1>
+     <table>
+         <thead>
+             <tr>
+                 <th class="checkAll">
+                     <input type="checkbox" />全选</th>
+                 <th>商品</th>
+                 <th>名称</th>
+                 <th>单价</th>
+                 <th>数量</th>
+                 <th>操作</th>
+             </tr>
+         </thead>
+         <tbody id="goods">
+         </tbody>
+         <tfoot>
+             <tr>
+                 <td class="checkAll">
+                     <input type="checkbox" />全选</td>
+                 <td colspan="5">
+                     <input type="button" value="批量删除" /></td>
+             </tr>
+         </tfoot>
+     </table>
+ </div>
+</body>
+</html>
+</html> 

@@ -1,0 +1,25 @@
+.wq-content{
+	padding-bottom:40px;
+
+}
+.wq-content:hover{
+	transition: all .5s;
+	text-shadow: 0 0 5px #999;
+}
+.wq-main-table thead{
+	background: rgba(0,0,0,.3);
+	color: #333;
+}
+.wq-main-table td{
+	max-height: 50px;
+	word-break: break-all;
+}
+.center-vertical {
+    position:relative;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.wq-add .modal-content{
+	padding: 20px;
+} 
