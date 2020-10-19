@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer"/>
+
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        img{
+            display: block;
+        }
+        body{
+            background: black;
+        }
+        ul{
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            justify-content: space-between;
+        }
+        li{
+            width: 24%;
+            height: 650px;
+            border: 1px solid white;
+            margin-top: 50px;
+        }
+        img{
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        h3{
+            margin-top: 20px;
+            width: 100%;
+            color: white;
+            text-align: center;
+        }
+        p{
+            margin-top: 20px;
+            color: white;
+            font-size: 20px;
+            line-height: 40px;
+            text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+        }
+        span{
+            
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
+            color: white;
+            font-size: 50px;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <ul id="list">
+        <!-- <li>
+            <img src="http://pic1.iqiyipic.com/image/20200729/55/32/v_150336464_m_601_m9.jpg" alt="">
+            <h3>卧鱼</h3>
+            <p>
+                余最是一名体校生，他勇敢、聪明，讲信义，重感情，孝顺父母。同时，他身边还有一群和他一样的小伙伴们。他们兄弟情深，相互帮助，共渡难关。而这些一点一滴看似平淡的小事，却引起了一位神秘人的注意……
+            </p>
+            <span>♥</span>
+        </li> -->
+    </ul>
+    <script src="./ajax.js"></script>
+    <script>
+        var oUl = document.getElementById("list");
+        var obj = {};
+         ajax({
+                url: "list.json",
+                type: "get",
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    var cinema = obj["data"]["list"]
+                    console.log(cinema[0].title);
+                    var str = ""
+                   for(let i = 0;i < cinema.length;i++){
+                       str += `
+                       <li>
+                        <img src=${cinema[i].imageUrl} alt="">
+                        <h3>${cinema[i].title}</h3>
+                        <p>
+                            ${cinema[i].description}
+                        </p>
+                        <span>♥</span>
+                     </li>
+                     `
+                    obj[i] = "f";
+                   }
+                   
+                   oUl.innerHTML = str;
+                   var oSpan = document.querySelectorAll("span");
+
+                   for(var k in oSpan){
+                       if(localStorage.getItem(k) == "t"){
+                           oSpan[k].style.color = "red";
+                           obj[k] = "t";
+                       }
+                   }
+
+
+                   for(let i = 0;i < cinema.length;i++){
+                        oSpan[i].onclick = function(){
+                            if(oSpan[i].style.color == "white"){
+                                oSpan[i].style.color = "red";
+                                obj[i] = "t";
+                            }else{
+                                oSpan[i].style.color = "white";
+                                obj[i] = "f";
+                            }
+                            for(var j in obj){
+                                localStorage.setItem(j,obj[j]);
+                            }
+
+                         }
+
+                   }
+                }
+            })
+    </script>
+</body>
+</html>
